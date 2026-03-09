@@ -1,0 +1,24 @@
+{
+  "name": "personalblog",
+  "version": "1.0.0",
+  "description": "a personal blog to write and publish articles on various topics.\r - Node.js + Express + EJS\r - Articles stored as JSON files in /data/articles\r - Guest: home page, article page\r - Admin: dashboard, add/edit/delete article\r - Auth: hardcoded admin username/password\r - Done when I can create an article and see it on the home page",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sourrena/personalBlog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sourrena/personalBlog/issues"
+  },
+  "homepage": "https://github.com/sourrena/personalBlog#readme",
+  "dependencies": {
+    "ejs": "^5.0.1",
+    "express": "^5.2.1"
+  }
+}
