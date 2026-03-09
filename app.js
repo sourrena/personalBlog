@@ -9,8 +9,24 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(express.static(path.join(__dirname, "public")));
 
+const posts = [
+    { id: 1, title: "First Post", summary: "This is my first blog post." },
+    { id: 2, title: "Second Post", summary: "This is my second blog post." }
+  ];
+
 app.get("/", (req, res) => {
-  res.send("Blog is running");
+  res.render("index", { posts });
+});
+
+app.get("/posts/:id", (req, res) => {
+  const postId = Number(req.params.id);
+  const post = posts.find(post => post.id === postId);
+
+  if (!post) {
+    return res.status(404).send("Post not found");
+  }
+
+  res.render("post", { post });
 });
 
 app.listen(PORT, () => {
