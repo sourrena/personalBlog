@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 
 const app = express();
 const PORT = 3000;
@@ -9,16 +10,20 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(express.static(path.join(__dirname, "public")));
 
-const posts = [
-    { id: 1, title: "First Post", summary: "This is my first blog post." },
-    { id: 2, title: "Second Post", summary: "This is my second blog post." }
-  ];
+const postsFilePath = path.join(__dirname, "data", "posts.json");
+
+function getPosts() {
+  const postsData = fs.readFileSync(postsFilePath, "utf-8");
+  return JSON.parse(postsData);
+}
 
 app.get("/", (req, res) => {
+  const posts = getPosts();
   res.render("index", { posts });
 });
 
 app.get("/posts/:id", (req, res) => {
+  const posts = getPosts();
   const postId = Number(req.params.id);
   const post = posts.find(post => post.id === postId);
 
