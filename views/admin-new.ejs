@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create New Post</title>
+</head>
+<body>
+  <h1>Create New Post</h1>
+
+  <form action="/admin/new" method="POST">
+
+    <div>
+      <label>Title</label><br>
+      <input type="text" name="title">
+    </div>
+
+    <br>
+
+    <div>
+      <label>Summary</label><br>
+      <input type="text" name="summary">
+    </div>
+
+    <br>
+
+    <div>
+      <label>Content</label><br>
+      <textarea name="content"></textarea>
+    </div>
+
+    <br>
+
+    <button type="submit">Create Post</button>
+
+  </form>
+</body>
+</html>
