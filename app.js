@@ -1,6 +1,12 @@
 const express = require("express");
 const path = require("path");
-const fs = require("fs");
+const {
+  getPosts,
+  getPostById,
+  createPost,
+  updatePost,
+  deletePost
+} = require("./services/postService");
 
 const app = express();
 const PORT = 3000;
@@ -11,100 +17,77 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 
-const postsFilePath = path.join(__dirname, "data", "posts.json");
+const {
+  getHomePage,
+  getSinglePostPage
+} = require("./controllers/postController");
 
-function getPosts() {
-  const postsData = fs.readFileSync(postsFilePath, "utf-8");
-  return JSON.parse(postsData);
-}
+const {
+  getNewPostPage,
+  createNewPost
+} = require("./controllers/adminController");
 
-function savePosts(posts) {
-  fs.writeFileSync(postsFilePath, JSON.stringify(posts, null, 2));
-}
+app.get("/", getHomePage);
+app.get("/posts/:id", getSinglePostPage);
 
-app.get("/", (req, res) => {
-  const posts = getPosts();
-  res.render("index", { posts });
-});
+app.get("/admin/new", getNewPostPage);
+app.post("/admin/new", createNewPost);
 
-app.get("/posts/:id", (req, res) => {
-  const posts = getPosts();
+app.get("/admin/edit/:id", (req, res) => {
   const postId = Number(req.params.id);
-  const post = posts.find(post => post.id === postId);
+  const post = getPostById(postId);
 
   if (!post) {
-    return res.status(404).send("Post not found");
+    return res.status(404).render("404", { message: "Post not found" });
   }
 
-  res.render("post", { post });
+  res.render("admin-edit", {
+    post,
+    error: null,
+    formData: {
+      title: post.title,
+      summary: post.summary,
+      content: post.content
+    }
+  });
 });
 
-app.get("/admin/new", (req, res) => {
-  res.render("admin-new");
-});
+app.post("/admin/edit/:id", (req, res) => {
+  const postId = Number(req.params.id);
+  const existingPost = getPostById(postId);
 
-app.post("/admin/new", (req, res) => {
-  const posts = getPosts();
+  if (!existingPost) {
+    return res.status(404).render("404", { message: "Post not found" });
+  }
 
   const title = req.body.title.trim();
   const summary = req.body.summary.trim();
   const content = req.body.content.trim();
 
   if (!title || !summary || !content) {
-  return res.status(400).send("All fields are required");
-}
-
-  const newPost = {
-    id: Math.max(...posts.map(post => post.id), 0) + 1,
-    title,
-    summary,
-    content
-  };
-
-  posts.push(newPost);
-
-  savePosts(posts);
-
-  res.redirect("/");
-});
-
-app.get("/admin/edit/:id", (req, res) => {
-  const posts = getPosts();
-  const postId = Number(req.params.id);
-  const post = posts.find((post) => post.id === postId);
-
-  if (!post) {
-    return res.status(404).send("Post not found");
+    return res.status(400).render("admin-edit", {
+      post: existingPost,
+      error: "All fields are required",
+      formData: {
+        title,
+        summary,
+        content
+      }
+    });
   }
 
-  res.render("admin-edit", { post });
-});
-
-app.post("/admin/edit/:id", (req, res) => {
-  const posts = getPosts();
-  const postId = Number(req.params.id);
-  const post = posts.find((post) => post.id === postId);
-
-  if (!post) {
-    return res.status(404).send("Post not found");
-  }
-
-  post.title = req.body.title;
-  post.summary = req.body.summary;
-  post.content = req.body.content;
-
-  savePosts(posts);
+  updatePost(postId, { title, summary, content });
 
   res.redirect(`/posts/${postId}`);
 });
 
 app.post("/admin/delete/:id", (req, res) => {
-  const posts = getPosts();
   const postId = Number(req.params.id);
+  const deleted = deletePost(postId);
 
-  const filteredPosts = posts.filter((post) => post.id !== postId);
-
-  savePosts(filteredPosts);
+  if (!deleted) {
+    return res.status(404).render("404", { message: "Post not found" });
+  }
 
   res.redirect("/");
 });
