@@ -1,4 +1,6 @@
-const { getPosts, getPostById } = require("../services/postService");
+const { getPosts } = require("../services/postService");
+
+const { findPostOr404 } = require("../helpers/postHelpers");
 
 function getHomePage(req, res) {
   const posts = getPosts();
@@ -6,11 +8,10 @@ function getHomePage(req, res) {
 }
 
 function getSinglePostPage(req, res) {
-  const postId = Number(req.params.id);
-  const post = getPostById(postId);
+  const post = findPostOr404(req, res);
 
   if (!post) {
-    return res.status(404).render("404", { message: "Post not found" });
+    return;
   }
 
   res.render("post", { post });
