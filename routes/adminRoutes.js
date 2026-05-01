@@ -1,4 +1,5 @@
 const express = require("express");
+const { requireAuth } = require("../middleware/authMiddleware");
 const {
   getNewPostPage,
   createNewPost,
@@ -8,6 +9,7 @@ const {
 } = require("../controllers/adminController");
 
 const router = express.Router();
+router.use(requireAuth);
 
 router.get("/admin/new", getNewPostPage);
 router.post("/admin/new", createNewPost);

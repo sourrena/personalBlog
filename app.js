@@ -1,4 +1,5 @@
 const express = require("express");
+const session = require("express-session");
 const path = require("path");
 const {
   getPosts,
@@ -7,6 +8,8 @@ const {
   updatePost,
   deletePost
 } = require("./services/postService");
+
+const authRoutes = require("./routes/authRoutes");
 
 const postRoutes = require("./routes/postRoutes");
 const adminRoutes = require("./routes/adminRoutes");
@@ -19,7 +22,15 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
+app.use(
+  session({
+    secret: "mysecretkey",
+    resave: false,
+    saveUninitialized: false
+  })
+);
 
+app.use(authRoutes);
 app.use(postRoutes);
 app.use(adminRoutes);
 
