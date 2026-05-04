@@ -1,15 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="stylesheet" href="/css/styles.css">
   <meta charset="UTF-8">
   <title><%= post.title %></title>
 </head>
 <body>
-  <h1><%= post.title %></h1>
-  <p><%= post.content %></p>
+  <header>
+    <div class="container">
+      <nav>
+        <a href="/">← Back to Blog</a>
+        <a class="btn" href="/admin/edit/<%= post.id %>">Edit Post</a>
+      </nav>
+    </div>
+  </header>
 
-  <a href="/">Back to Home</a>
-<br><br>
-<a href="/admin/edit/<%= post.id %>">Edit Post</a>
+  <main class="container">
+    <article class="card">
+      <h1><%= post.title %></h1>
+
+      <% if (post.created_at) { %>
+        <p class="meta">
+          Created: <%= new Date(post.created_at).toLocaleString() %>
+        </p>
+      <% } %>
+
+      <% if (post.updated_at && post.updated_at !== post.created_at) { %>
+        <p class="meta">
+          Updated: <%= new Date(post.updated_at).toLocaleString() %>
+        </p>
+      <% } %>
+
+      <hr>
+
+      <p><%= post.content %></p>
+    </article>
+  </main>
 </body>
-</html>
