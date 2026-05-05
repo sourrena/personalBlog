@@ -2,6 +2,9 @@
 Live Demo :
 
 https://personalblog-26dy.onrender.com/
+## Credentials (Demo)
+
+Password: admin123
 
 ## Overview
 
