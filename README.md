@@ -1,7 +1,7 @@
 # Personal Blog (Node.js Backend Project)
 Live Demo :
 
-https://your-render-url.onrender.com
+https://personalblog-26dy.onrender.com/
 
 ## Overview
 
